@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="width: 100%; height: 50%">
+    <h>CPU</h>
+  <canvas id="cpu"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  java_cpu = JSON.parse({{ java_cpu | tojson }});
+  mongo_cpu = JSON.parse({{ mongo_cpu | tojson }});
+  correlator_cpu = JSON.parse({{ correlator_cpu | tojson }});
+  wafd_cpu = JSON.parse({{ wafd_cpu | tojson }});
+  wafgowaf_cpu = JSON.parse({{ wafgowaf_cpu | tojson }});
+  celery_cpu = JSON.parse({{ celery_cpu | tojson }});
+  rabbitmq_cpu = JSON.parse({{ rabbitmq_cpu | tojson }});
+  freshclam_cpu = JSON.parse({{ freshclam_cpu | tojson }});
+  waf_nginx_cpu = JSON.parse({{ waf_nginx_cpu | tojson }});
+  const elem = document.getElementById('cpu');
+  new Chart(elem, {
+    type: 'line',
+    data: {
+      labels: java_cpu.map(row => row.date),
+      datasets: [{
+        label: 'Elascicsearch (%)',
+        data: java_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+      },
+      {
+        label: 'Mongo (%)',
+        data: mongo_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'correlator (%)',
+        data: correlator_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'wafd (%)',
+        data: wafd_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'wafgowaf (%)',
+        data: wafgowaf_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'celery (%)',
+        data: celery_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'rabbitmq (%)',
+        data: rabbitmq_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'freshclam (%)',
+        data: freshclam_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      },
+      {
+        label: 'waf-nginx (%)',
+        data: waf_nginx_cpu.map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1
+
+      }
+
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          suggestedMax: 100,
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+
+
+</body>
+</html>
