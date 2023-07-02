@@ -26,11 +26,33 @@
 </details>
 </div>
 
+
+<div style="padding-top: 10px">
+<details>
+    <summary> Потребление ОЗУ по процессам</summary>
+     <div style=" height:40vh; width:100%;  padding-top: 50px">
+    <h style="color: #ffffff">nginx_CPU</h>
+  <canvas id="mem"></canvas>
+</div>
+</details>
+</div>
+
+<div style="padding-top: 10px">
+<details>
+    <summary> Потребление ОЗУ waf-nginx</summary>
+     <div style=" height:40vh; width:100%;  padding-top: 50px">
+    <h style="color: #ffffff">nginx_CPU</h>
+  <canvas id="waf_nginx_mem"></canvas>
+</div>
+</details>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-
-  cpu = {{ json_dump | tojson }};
+  // CPU
+  cpu = {{ json_dump_cpu | tojson }};
   waf_nginx_cpu = JSON.parse({{ waf_nginx_cpu | tojson }});
   const elem = document.getElementById('cpu');
   new Chart(elem, {
@@ -135,7 +157,6 @@
     }
   });
 
-
   const elem2 = document.getElementById('waf_nginx_cpu');
   new Chart(elem2, {
        type: 'line',
@@ -144,6 +165,152 @@
     datasets: [{
         label: 'nginx workers (%)',
         data: waf_nginx_cpu,
+        borderWidth: 1,
+        tension: 0.1,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
+    }]
+  },
+  options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        pointRadius: 1.5,
+    scales: {
+        x:{
+            ticks:
+                {
+                    color: "#ffffff"
+                }
+        },
+        y: {
+            ticks:
+                {
+                    color: "#ffffff"
+                },
+
+          suggestedMax: 100,
+          beginAtZero: true
+
+        }
+      }
+  }
+})
+  //memory
+  mem = {{ json_dump_mem | tojson }};
+  waf_nginx_mem = JSON.parse({{ waf_nginx_mem | tojson }});
+  const elem3 = document.getElementById('mem');
+  new Chart(elem3, {
+    type: 'line',
+    data: {
+      labels: mem[0].map(row => row.date),
+      datasets: [{
+        label: 'Elascicsearch (%)',
+        data: mem[0].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+      },
+      {
+        label: 'Mongo (%)',
+        data: mem[1].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'correlator (%)',
+        data: mem[3].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'wafd (%)',
+        data: mem[3].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'wafgowaf (%)',
+        data: mem[4].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'celery (%)',
+        data: mem[5].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'rabbitmq (%)',
+        data: mem[6].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'freshclam (%)',
+        data: mem[7].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'waf-sync (%)',
+        data: mem[9].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      }
+      ]
+    },
+  options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      scales: {
+
+         x:{
+            ticks:
+                {
+                    color: "#ffffff"
+                }
+        },
+        y: {
+            ticks:
+                {
+                    color: "#ffffff"
+                },
+
+          suggestedMax: 100,
+          beginAtZero: true
+
+        }
+      }
+    }
+  });
+
+  const elem4 = document.getElementById('waf_nginx_mem');
+  new Chart(elem4, {
+       type: 'line',
+
+  data: {
+    datasets: [{
+        label: 'nginx workers (%)',
+        data: waf_nginx_mem,
         borderWidth: 1,
         tension: 0.1,
         parsing: {

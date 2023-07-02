@@ -1,11 +1,13 @@
-import os
+from os.path import join, dirname, relpath
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, flash, request, redirect, url_for
 import json
+
+import atop_parse
 from atop_parse import *
 
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = join(dirname(relpath(__file__)), 'uploads')
 
 
 app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
@@ -27,13 +29,17 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('chart', name=filename))
+            compile_file_to_txt(filename)
+
     return render_template("upload_file.html")
 
 
 @app.route('/chart', methods=['GET', 'POST'])
 def chart():
+
     filename = request.args.get('name')
-    json_dump = parse_cpu(filename)
+    json_dump_cpu = parse_cpu(filename)
+    json_dump_mem = parse_mem(filename)
     # java_cpu = json.dumps(json_dump[0])
     # mongo_cpu = json.dumps(json_dump[1])
     # correlator_cpu = json.dumps(json_dump[2])
@@ -42,11 +48,13 @@ def chart():
     # celery_cpu = json.dumps(json_dump[5])
     # rabbitmq_cpu = json.dumps(json_dump[6])
     # freshclam_cpu = json.dumps(json_dump[7])
-    waf_nginx_cpu = json.dumps(json_dump[8])
+    waf_nginx_cpu = json.dumps(json_dump_cpu[8])
+    waf_nginx_mem = json.dumps(json_dump_mem[8])
+    print(waf_nginx_mem)
     # waf_sync_cpu = json.dumps(json_dump[9])
     # print(json_dump)
 
-    return render_template("chart.html", json_dump=json_dump,waf_nginx_cpu=waf_nginx_cpu)
+    return render_template("chart.html", json_dump_cpu=json_dump_cpu, json_dump_mem=json_dump_mem, waf_nginx_cpu=waf_nginx_cpu,waf_nginx_mem=waf_nginx_mem)
 
                            # java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu,
                            # wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu,
@@ -54,4 +62,4 @@ def chart():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5050)
+    app.run(debug=True, port=5050, host='0.0.0.0')
