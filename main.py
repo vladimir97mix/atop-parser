@@ -1,10 +1,10 @@
 from os.path import join, dirname, relpath
+import os
 from werkzeug.utils import secure_filename
 from flask import Flask, render_template, flash, request, redirect, url_for
 import json
 
 import atop_parse
-from atop_parse import *
 
 
 UPLOAD_FOLDER = join(dirname(relpath(__file__)), 'uploads')
@@ -29,7 +29,6 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('chart', name=filename))
-            compile_file_to_txt(filename)
 
     return render_template("upload_file.html")
 
@@ -38,27 +37,14 @@ def upload_file():
 def chart():
 
     filename = request.args.get('name')
-    json_dump_cpu = parse_cpu(filename)
-    json_dump_mem = parse_mem(filename)
-    # java_cpu = json.dumps(json_dump[0])
-    # mongo_cpu = json.dumps(json_dump[1])
-    # correlator_cpu = json.dumps(json_dump[2])
-    # wafd_cpu = json.dumps(json_dump[3])
-    # wafgowaf_cpu = json.dumps(json_dump[4])
-    # celery_cpu = json.dumps(json_dump[5])
-    # rabbitmq_cpu = json.dumps(json_dump[6])
-    # freshclam_cpu = json.dumps(json_dump[7])
+    atop_parse.compile_file_to_txt(filename)
+    json_dump_cpu = atop_parse.parse_cpu(filename)
+    json_dump_mem = atop_parse.parse_mem(filename)
     waf_nginx_cpu = json.dumps(json_dump_cpu[8])
     waf_nginx_mem = json.dumps(json_dump_mem[8])
-    print(waf_nginx_mem)
-    # waf_sync_cpu = json.dumps(json_dump[9])
-    # print(json_dump)
 
-    return render_template("chart.html", json_dump_cpu=json_dump_cpu, json_dump_mem=json_dump_mem, waf_nginx_cpu=waf_nginx_cpu,waf_nginx_mem=waf_nginx_mem)
-
-                           # java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu,
-                           # wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu,
-                           # freshclam_cpu=freshclam_cpu, waf_nginx_cpu=waf_nginx_cpu, waf_sync_cpu=waf_sync_cpu)
+    return render_template("chart.html", json_dump_cpu=json_dump_cpu, json_dump_mem=json_dump_mem,
+                           waf_nginx_cpu=waf_nginx_cpu,waf_nginx_mem=waf_nginx_mem)
 
 
 if __name__ == '__main__':

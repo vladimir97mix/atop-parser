@@ -8,20 +8,6 @@ def compile_file_to_txt(filename):
     os.system("atop -r ./uploads/{0} -m -c > ./uploads/{1}_mem_c.txt".format(filename, filename))
 
 
-# def parse_cpu(filename):
-#     # atop_file = open('uploads/atop.txt', 'r')
-#     atop_file = open('uploads/{0}.txt'.format(filename), 'r')
-#     atop_file_c = open('uploads/{0}_c.txt'.format(filename), 'r')
-#     return parse(atop_file, atop_file_c)
-#
-#
-# def parse_mem(filename):
-#     # atop_file = open('uploads/atop_mem.txt', 'r')
-#     atop_file = open('uploads/{0}_mem.txt'.format(filename), 'r')
-#     atop_file_c = open('uploads/{0}_mem_c.txt'.format(filename), 'r')
-#     return parse(atop_file, atop_file_c)
-
-
 def parse_cpu(filename):
 
     atop_file = open('uploads/{0}.txt'.format(filename), 'r')
@@ -74,8 +60,8 @@ def parse_cpu(filename):
             pass
     atop_file.close()
 
-
     atop_file_c = open('uploads/{0}_c.txt'.format(filename), 'r')
+
     for line in atop_file_c:
         try:
             if line.split()[0] == 'ATOP':
@@ -98,6 +84,7 @@ def parse_cpu(filename):
     atop_file_c.close()
 
     return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+
 
 def parse_mem(filename):
 
@@ -151,8 +138,8 @@ def parse_mem(filename):
             pass
     atop_file.close()
 
-
     atop_file_c = open('uploads/{0}_mem_c.txt'.format(filename), 'r')
+
     for line in atop_file_c:
         try:
             if line.split()[0] == 'ATOP':
