@@ -32,7 +32,7 @@ def upload_file():
 @app.route('/chart', methods=['GET', 'POST'])
 def chart():
     filename = request.args.get('name')
-    compile_file_to_txt(filename)
+    # compile_file_to_txt(filename)
     json_dump = parse_cpu(filename)
     java_cpu = json.dumps(json_dump[0])
     mongo_cpu = json.dumps(json_dump[1])
@@ -43,8 +43,9 @@ def chart():
     rabbitmq_cpu = json.dumps(json_dump[6])
     freshclam_cpu = json.dumps(json_dump[7])
     waf_nginx_cpu = json.dumps(json_dump[8])
+    waf_sync_cpu = json.dumps(json_dump[9])
 
-    return render_template("chart.html", java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu, wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu, freshclam_cpu=freshclam_cpu, waf_nginx_cpu=waf_nginx_cpu)
+    return render_template("chart.html", java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu, wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu, freshclam_cpu=freshclam_cpu, waf_nginx_cpu=waf_nginx_cpu, waf_sync_cpu=waf_sync_cpu)
 
 
 if __name__ == '__main__':
