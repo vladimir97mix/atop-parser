@@ -8,7 +8,8 @@ from atop_parse import *
 UPLOAD_FOLDER = 'uploads'
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -32,20 +33,24 @@ def upload_file():
 @app.route('/chart', methods=['GET', 'POST'])
 def chart():
     filename = request.args.get('name')
-    # compile_file_to_txt(filename)
     json_dump = parse_cpu(filename)
-    java_cpu = json.dumps(json_dump[0])
-    mongo_cpu = json.dumps(json_dump[1])
-    correlator_cpu = json.dumps(json_dump[2])
-    wafd_cpu = json.dumps(json_dump[3])
-    wafgowaf_cpu = json.dumps(json_dump[4])
-    celery_cpu = json.dumps(json_dump[5])
-    rabbitmq_cpu = json.dumps(json_dump[6])
-    freshclam_cpu = json.dumps(json_dump[7])
+    # java_cpu = json.dumps(json_dump[0])
+    # mongo_cpu = json.dumps(json_dump[1])
+    # correlator_cpu = json.dumps(json_dump[2])
+    # wafd_cpu = json.dumps(json_dump[3])
+    # wafgowaf_cpu = json.dumps(json_dump[4])
+    # celery_cpu = json.dumps(json_dump[5])
+    # rabbitmq_cpu = json.dumps(json_dump[6])
+    # freshclam_cpu = json.dumps(json_dump[7])
     waf_nginx_cpu = json.dumps(json_dump[8])
-    waf_sync_cpu = json.dumps(json_dump[9])
+    # waf_sync_cpu = json.dumps(json_dump[9])
+    # print(json_dump)
 
-    return render_template("chart.html", java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu, wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu, freshclam_cpu=freshclam_cpu, waf_nginx_cpu=waf_nginx_cpu, waf_sync_cpu=waf_sync_cpu)
+    return render_template("chart.html", json_dump=json_dump,waf_nginx_cpu=waf_nginx_cpu)
+
+                           # java_cpu=java_cpu, mongo_cpu=mongo_cpu, correlator_cpu=correlator_cpu, wafd_cpu=wafd_cpu,
+                           # wafgowaf_cpu=wafgowaf_cpu, celery_cpu=celery_cpu, rabbitmq_cpu=rabbitmq_cpu,
+                           # freshclam_cpu=freshclam_cpu, waf_nginx_cpu=waf_nginx_cpu, waf_sync_cpu=waf_sync_cpu)
 
 
 if __name__ == '__main__':
