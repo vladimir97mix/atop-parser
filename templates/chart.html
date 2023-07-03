@@ -14,18 +14,7 @@
 <details>
     <summary> Нагрузка на ЦПУ по процессам</summary>
    <div style="height:40vh; width:100%; padding-top: 50px">
-    <h style="color: #ffffff">CPU</h>
   <canvas id="cpu"></canvas>
-</div>
-</details>
-</div>
-
-<div style="padding-top: 10px">
-<details>
-    <summary> Нагрузка на ЦПУ waf-nginx</summary>
-     <div style=" height:40vh; width:100%;  padding-top: 50px">
-    <h style="color: #ffffff">nginx_CPU</h>
-  <canvas id="waf_nginx_cpu"></canvas>
 </div>
 </details>
 </div>
@@ -35,19 +24,18 @@
 <details>
     <summary> Потребление ОЗУ по процессам</summary>
      <div style=" height:40vh; width:100%;  padding-top: 50px">
-    <h style="color: #ffffff">nginx_CPU</h>
-  <canvas id="mem"></canvas>
-</div>
+        <canvas id="mem"></canvas>
+    </div>
 </details>
 </div>
 
+
 <div style="padding-top: 10px">
 <details>
-    <summary> Потребление ОЗУ waf-nginx</summary>
+    <summary> Утилизация диска по процессам</summary>
      <div style=" height:40vh; width:100%;  padding-top: 50px">
-    <h style="color: #ffffff">nginx_CPU</h>
-  <canvas id="waf_nginx_mem"></canvas>
-</div>
+        <canvas id="dsk"></canvas>
+    </div>
 </details>
 </div>
 
@@ -133,7 +121,18 @@
         tension: 0.1,
         pointRadius: 1.5
 
-      }
+      },
+      {
+        label: 'nginx workers (%)',
+        data: waf_nginx_cpu,
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
+    }
       ]
     },
   options: {
@@ -161,51 +160,12 @@
     }
   });
 
-  const elem2 = document.getElementById('waf_nginx_cpu');
-  new Chart(elem2, {
-       type: 'line',
 
-  data: {
-    datasets: [{
-        label: 'nginx workers (%)',
-        data: waf_nginx_cpu,
-        borderWidth: 1,
-        tension: 0.1,
-        parsing: {
-        xAxisKey: 'date',
-        yAxisKey: 'count'
-    }
-    }]
-  },
-  options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        pointRadius: 1.5,
-    scales: {
-        x:{
-            ticks:
-                {
-                    color: "#ffffff"
-                }
-        },
-        y: {
-            ticks:
-                {
-                    color: "#ffffff"
-                },
-
-          suggestedMax: 100,
-          beginAtZero: true
-
-        }
-      }
-  }
-})
   //memory
   mem = {{ json_dump_mem | tojson }};
   waf_nginx_mem = JSON.parse({{ waf_nginx_mem | tojson }});
-  const elem3 = document.getElementById('mem');
-  new Chart(elem3, {
+  const elem2 = document.getElementById('mem');
+  new Chart(elem2, {
     type: 'line',
     data: {
       labels: mem[0].map(row => row.date),
@@ -279,7 +239,18 @@
         tension: 0.1,
         pointRadius: 1.5
 
-      }
+      },
+      {
+        label: 'nginx workers (%)',
+        data: waf_nginx_mem,
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
+    }
       ]
     },
   options: {
@@ -307,28 +278,104 @@
     }
   });
 
-  const elem4 = document.getElementById('waf_nginx_mem');
-  new Chart(elem4, {
-       type: 'line',
-
-  data: {
-    datasets: [{
-        label: 'nginx workers (%)',
-        data: waf_nginx_mem,
+//disk
+  dsk = {{ json_dump_dsk | tojson }};
+  waf_nginx_dsk = JSON.parse({{ waf_nginx_dsk | tojson }});
+  const elem3 = document.getElementById('dsk');
+  new Chart(elem3, {
+    type: 'line',
+    data: {
+      labels: dsk[0].map(row => row.date),
+      datasets: [{
+        label: 'Elascicsearch (%)',
+        data: cpu[0].map(row => row.count),
         borderWidth: 1,
         tension: 0.1,
+        pointRadius: 1.5
+      },
+      {
+        label: 'Mongo (%)',
+        data: dsk[1].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'correlator (%)',
+        data: dsk[3].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'wafd (%)',
+        data: dsk[3].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'wafgowaf (%)',
+        data: dsk[4].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'celery (%)',
+        data: dsk[5].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'rabbitmq (%)',
+        data: dsk[6].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'freshclam (%)',
+        data: dsk[7].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'waf-sync (%)',
+        data: dsk[9].map(row => row.count),
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5
+
+      },
+      {
+        label: 'nginx workers (%)',
+        data: waf_nginx_dsk,
+        borderWidth: 1,
+        tension: 0.1,
+        pointRadius: 1.5,
         parsing: {
         xAxisKey: 'date',
         yAxisKey: 'count'
     }
-    }]
-  },
+    }
+      ]
+    },
   options: {
         responsive: true,
         maintainAspectRatio: false,
-        pointRadius: 1.5,
-    scales: {
-        x:{
+      scales: {
+
+         x:{
             ticks:
                 {
                     color: "#ffffff"
@@ -345,9 +392,8 @@
 
         }
       }
-  }
-})
-
+    }
+  });
 </script>
 
 

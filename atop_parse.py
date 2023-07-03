@@ -2,163 +2,243 @@ import os
 
 
 def compile_file_to_txt(filename):
-    os.system("atop -r ./uploads/{0} > ./uploads/{1}.txt".format(filename, filename))
-    os.system("atop -r ./uploads/{0} -c > ./uploads/{1}_c.txt".format(filename, filename))
-    os.system("atop -r ./uploads/{0} -m > ./uploads/{1}_mem.txt".format(filename, filename))
-    os.system("atop -r ./uploads/{0} -m -c > ./uploads/{1}_mem_c.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} > uploads/{1}.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} -c > uploads/{1}_c.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} -m > uploads/{1}_mem.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} -m -c > uploads/{1}_mem_c.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} -d > uploads/{1}_dsk.txt".format(filename, filename))
+    os.system("atop -r uploads/{0} -d -c > uploads/{1}_dsk_c.txt".format(filename, filename))
+    return True
 
 
 def parse_cpu(filename):
 
-    atop_file = open('uploads/{0}.txt'.format(filename), 'r')
+    with open('uploads/{0}.txt'.format(filename), 'r') as cpu_file:
+        atop_file = cpu_file
 
-    date = ''
-    java_list = []
-    mongo_list = []
-    correlator_list = []
-    wafd_list = []
-    wafgowaf_list = []
-    celery_list = []
-    rabbitmq_list = []
-    freshclam_list = []
-    waf_nginx_list = []
-    waf_sync_list = []
-    for line in atop_file:
-        line = line.split()
-        try:
-            if line[0] == 'ATOP':
-                date = str(line[3]+' '+line[4])
-            if line[-1] == 'java':
-                java_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": java_cpu})
-                java_list.append(process_data_dict)
-            if line[-1] == 'mongod':
-                mongo_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": mongo_cpu})
-                mongo_list.append(process_data_dict)
-            if line[-1] == 'wafd':
-                wafd_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": wafd_cpu})
-                wafd_list.append(process_data_dict)
-            if line[-1] == 'waf-gowaf':
-                wafgowaf_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": wafgowaf_cpu})
-                wafgowaf_list.append(process_data_dict)
-            if line[-1] == 'celery':
-                celery_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": celery_cpu})
-                celery_list.append(process_data_dict)
-            if line[-1] == 'beam.smp':
-                rabbitmq_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": rabbitmq_cpu})
-                rabbitmq_list.append(process_data_dict)
-            if line[-1] == 'freshclam':
-                freshclam_cpu = int(line[10][:-1])
-                process_data_dict = dict({"date": date, "count": freshclam_cpu})
-                freshclam_list.append(process_data_dict)
-        except IndexError:
-            pass
-    atop_file.close()
-
-    atop_file_c = open('uploads/{0}_c.txt'.format(filename), 'r')
-
-    for line in atop_file_c:
-        try:
-            if line.split()[0] == 'ATOP':
-                date = str(line.split()[3] + ' ' + line.split()[4])
-            if 'waf-nginx: worker process' in line:
-                waf_nginx_cpu = line.split()[3][:-1]
-                process_data_dict = dict({"date": date, "count": waf_nginx_cpu})
-                waf_nginx_list.append(process_data_dict)
+        date = ''
+        java_list = []
+        mongo_list = []
+        correlator_list = []
+        wafd_list = []
+        wafgowaf_list = []
+        celery_list = []
+        rabbitmq_list = []
+        freshclam_list = []
+        waf_nginx_list = []
+        waf_sync_list = []
+        for line in atop_file:
             line = line.split()
-            if line[-1] == 'waf-sync':
-                waf_sync_cpu = line[3][:-1]
-                process_data_dict = dict({"date": date, "count": waf_sync_cpu})
-                waf_sync_list.append(process_data_dict)
-            if line[-1] == 'waf-correlator':
-                correlator_cpu = line[3][:-1]
-                process_data_dict = dict({"date": date, "count": correlator_cpu})
-                correlator_list.append(process_data_dict)
-        except IndexError:
-            pass
-    atop_file_c.close()
+            try:
+                if line[0] == 'ATOP':
+                    date = str(line[3]+' '+line[4])
+                if line[-1] == 'java':
+                    java_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": java_cpu})
+                    java_list.append(process_data_dict)
+                if line[-1] == 'mongod':
+                    mongo_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": mongo_cpu})
+                    mongo_list.append(process_data_dict)
+                if line[-1] == 'wafd':
+                    wafd_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": wafd_cpu})
+                    wafd_list.append(process_data_dict)
+                if line[-1] == 'waf-gowaf':
+                    wafgowaf_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": wafgowaf_cpu})
+                    wafgowaf_list.append(process_data_dict)
+                if line[-1] == 'celery':
+                    celery_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": celery_cpu})
+                    celery_list.append(process_data_dict)
+                if line[-1] == 'beam.smp':
+                    rabbitmq_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": rabbitmq_cpu})
+                    rabbitmq_list.append(process_data_dict)
+                if line[-1] == 'freshclam':
+                    freshclam_cpu = int(line[10][:-1])
+                    process_data_dict = dict({"date": date, "count": freshclam_cpu})
+                    freshclam_list.append(process_data_dict)
+            except IndexError:
+                pass
 
-    return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+    with open('uploads/{0}_c.txt'.format(filename), 'r') as cpu_file_c:
+        atop_file_c = cpu_file_c
+
+        for line in atop_file_c:
+            try:
+                if line.split()[0] == 'ATOP':
+                    date = str(line.split()[3] + ' ' + line.split()[4])
+                if 'waf-nginx: worker process' in line:
+                    waf_nginx_cpu = line.split()[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_nginx_cpu})
+                    waf_nginx_list.append(process_data_dict)
+                line = line.split()
+                if line[-1] == 'waf-sync':
+                    waf_sync_cpu = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_sync_cpu})
+                    waf_sync_list.append(process_data_dict)
+                if line[-1] == 'waf-correlator':
+                    correlator_cpu = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": correlator_cpu})
+                    correlator_list.append(process_data_dict)
+            except IndexError:
+                pass
+
+        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
 
 
 def parse_mem(filename):
+    with open('uploads/{0}_mem.txt'.format(filename), 'r') as mem_file:
+        atop_file = mem_file
 
-    atop_file = open('uploads/{0}_mem.txt'.format(filename), 'r')
-
-    date = ''
-    java_list = []
-    mongo_list = []
-    correlator_list = []
-    wafd_list = []
-    wafgowaf_list = []
-    celery_list = []
-    rabbitmq_list = []
-    freshclam_list = []
-    waf_nginx_list = []
-    waf_sync_list = []
-    for line in atop_file:
-        line = line.split()
-        try:
-            if line[0] == 'ATOP':
-                date = str(line[3]+' '+line[4])
-            if line[-1] == 'java':
-                java_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": java_cpu})
-                java_list.append(process_data_dict)
-            if line[-1] == 'mongod':
-                mongo_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": mongo_cpu})
-                mongo_list.append(process_data_dict)
-            if line[-1] == 'wafd':
-                wafd_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": wafd_cpu})
-                wafd_list.append(process_data_dict)
-            if line[-1] == 'waf-gowaf':
-                wafgowaf_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": wafgowaf_cpu})
-                wafgowaf_list.append(process_data_dict)
-            if line[-1] == 'celery':
-                celery_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": celery_cpu})
-                celery_list.append(process_data_dict)
-            if line[-1] == 'beam.smp':
-                rabbitmq_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": rabbitmq_cpu})
-                rabbitmq_list.append(process_data_dict)
-            if line[-1] == 'freshclam':
-                freshclam_cpu = int(line[8][:-1])
-                process_data_dict = dict({"date": date, "count": freshclam_cpu})
-                freshclam_list.append(process_data_dict)
-        except IndexError:
-            pass
-    atop_file.close()
-
-    atop_file_c = open('uploads/{0}_mem_c.txt'.format(filename), 'r')
-
-    for line in atop_file_c:
-        try:
-            if line.split()[0] == 'ATOP':
-                date = str(line.split()[3] + ' ' + line.split()[4])
-            if 'waf-nginx: worker process' in line:
-                waf_nginx_cpu = line.split()[3][:-1]
-                process_data_dict = dict({"date": date, "count": waf_nginx_cpu})
-                waf_nginx_list.append(process_data_dict)
+        date = ''
+        java_list = []
+        mongo_list = []
+        correlator_list = []
+        wafd_list = []
+        wafgowaf_list = []
+        celery_list = []
+        rabbitmq_list = []
+        freshclam_list = []
+        waf_nginx_list = []
+        waf_sync_list = []
+        for line in atop_file:
             line = line.split()
-            if line[-1] == 'waf-sync':
-                waf_sync_cpu = line[3][:-1]
-                process_data_dict = dict({"date": date, "count": waf_sync_cpu})
-                waf_sync_list.append(process_data_dict)
-            if line[-1] == 'waf-correlator':
-                correlator_cpu = line[3][:-1]
-                process_data_dict = dict({"date": date, "count": correlator_cpu})
-                correlator_list.append(process_data_dict)
-        except IndexError:
-            pass
-    atop_file_c.close()
+            try:
+                if line[0] == 'ATOP':
+                    date = str(line[3]+' '+line[4])
+                if line[-1] == 'java':
+                    java_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": java_mem})
+                    java_list.append(process_data_dict)
+                if line[-1] == 'mongod':
+                    mongo_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": mongo_mem})
+                    mongo_list.append(process_data_dict)
+                if line[-1] == 'wafd':
+                    wafd_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": wafd_mem})
+                    wafd_list.append(process_data_dict)
+                if line[-1] == 'waf-gowaf':
+                    wafgowaf_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": wafgowaf_mem})
+                    wafgowaf_list.append(process_data_dict)
+                if line[-1] == 'celery':
+                    celery_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": celery_mem})
+                    celery_list.append(process_data_dict)
+                if line[-1] == 'beam.smp':
+                    rabbitmq_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": rabbitmq_mem})
+                    rabbitmq_list.append(process_data_dict)
+                if line[-1] == 'freshclam':
+                    freshclam_mem = int(line[8][:-1])
+                    process_data_dict = dict({"date": date, "count": freshclam_mem})
+                    freshclam_list.append(process_data_dict)
+            except IndexError:
+                pass
 
-    return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+    with open('uploads/{0}_mem_c.txt'.format(filename), 'r') as mem_file_c:
+        atop_file_c = mem_file_c
+
+        for line in atop_file_c:
+            try:
+                if line.split()[0] == 'ATOP':
+                    date = str(line.split()[3] + ' ' + line.split()[4])
+                if 'waf-nginx: worker process' in line:
+                    waf_nginx_mem = line.split()[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_nginx_mem})
+                    waf_nginx_list.append(process_data_dict)
+                line = line.split()
+                if line[-1] == 'waf-sync':
+                    waf_sync_mem = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_sync_mem})
+                    waf_sync_list.append(process_data_dict)
+                if line[-1] == 'waf-correlator':
+                    correlator_mem = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": correlator_mem})
+                    correlator_list.append(process_data_dict)
+            except IndexError:
+                pass
+
+        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+
+
+def parse_dsk(filename):
+    with open('uploads/{0}_dsk.txt'.format(filename), 'r') as dsk_file:
+        atop_file = dsk_file
+
+        date = ''
+        java_list = []
+        mongo_list = []
+        correlator_list = []
+        wafd_list = []
+        wafgowaf_list = []
+        celery_list = []
+        rabbitmq_list = []
+        freshclam_list = []
+        waf_nginx_list = []
+        waf_sync_list = []
+        for line in atop_file:
+            line = line.split()
+            try:
+                if line[0] == 'ATOP':
+                    date = str(line[3] + ' ' + line[4])
+                if line[-1] == 'java':
+                    java_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": java_dsk})
+                    java_list.append(process_data_dict)
+                if line[-1] == 'mongod':
+                    mongo_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": mongo_dsk})
+                    mongo_list.append(process_data_dict)
+                if line[-1] == 'wafd':
+                    wafd_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": wafd_dsk})
+                    wafd_list.append(process_data_dict)
+                if line[-1] == 'waf-gowaf':
+                    wafgowaf_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": wafgowaf_dsk})
+                    wafgowaf_list.append(process_data_dict)
+                if line[-1] == 'celery':
+                    celery_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": celery_dsk})
+                    celery_list.append(process_data_dict)
+                if line[-1] == 'beam.smp':
+                    rabbitmq_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": rabbitmq_dsk})
+                    rabbitmq_list.append(process_data_dict)
+                if line[-1] == 'freshclam':
+                    freshclam_dsk = int(line[5][:-1])
+                    process_data_dict = dict({"date": date, "count": freshclam_dsk})
+                    freshclam_list.append(process_data_dict)
+            except IndexError:
+                pass
+
+    with open('uploads/{0}_dsk_c.txt'.format(filename), 'r') as dsk_file_c:
+        atop_file_c = dsk_file_c
+
+        for line in atop_file_c:
+            try:
+                if line.split()[0] == 'ATOP':
+                    date = str(line.split()[3] + ' ' + line.split()[4])
+                if 'waf-nginx: worker process' in line:
+                    waf_nginx_dsk = line.split()[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_nginx_dsk})
+                    waf_nginx_list.append(process_data_dict)
+                line = line.split()
+                if line[-1] == 'waf-sync':
+                    waf_sync_dsk = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": waf_sync_dsk})
+                    waf_sync_list.append(process_data_dict)
+                if line[-1] == 'waf-correlator':
+                    correlator_dsk = line[3][:-1]
+                    process_data_dict = dict({"date": date, "count": correlator_dsk})
+                    correlator_list.append(process_data_dict)
+            except IndexError:
+                pass
+
+        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list,
+                freshclam_list, waf_nginx_list, waf_sync_list]

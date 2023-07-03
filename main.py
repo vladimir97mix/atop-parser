@@ -35,16 +35,18 @@ def upload_file():
 
 @app.route('/chart', methods=['GET', 'POST'])
 def chart():
-
     filename = request.args.get('name')
-    atop_parse.compile_file_to_txt(filename)
-    json_dump_cpu = atop_parse.parse_cpu(filename)
-    json_dump_mem = atop_parse.parse_mem(filename)
-    waf_nginx_cpu = json.dumps(json_dump_cpu[8])
-    waf_nginx_mem = json.dumps(json_dump_mem[8])
+    if atop_parse.compile_file_to_txt(filename) == True:
+        json_dump_cpu = atop_parse.parse_cpu(filename)
+        json_dump_mem = atop_parse.parse_mem(filename)
+        waf_nginx_cpu = json.dumps(json_dump_cpu[8])
+        waf_nginx_mem = json.dumps(json_dump_mem[8])
+        json_dump_dsk = atop_parse.parse_dsk(filename)
+        waf_nginx_dsk = json.dumps(json_dump_dsk[8])
 
     return render_template("chart.html", json_dump_cpu=json_dump_cpu, json_dump_mem=json_dump_mem,
-                           waf_nginx_cpu=waf_nginx_cpu,waf_nginx_mem=waf_nginx_mem)
+                           waf_nginx_cpu=waf_nginx_cpu, waf_nginx_mem=waf_nginx_mem, json_dump_dsk=json_dump_dsk,
+                           waf_nginx_dsk=waf_nginx_dsk)
 
 
 if __name__ == '__main__':
