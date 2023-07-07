@@ -2,18 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Atop parser</title>
     <link rel= "stylesheet" type= "text/css" href= "/css/style.css">
 <ul>
     <li><a href="/">Загрузить файл</a></li>
     <li><a href="#!">Список файлов</a></li>
-    <li style="float: right; font-size: 12px; padding: 8px;">Atop Logs Parser v0.3</li>
+    <li style="float: right; font-size: 12px; padding: 8px;">Atop Logs Parser v0.4</li>
 </ul>
 </head>
 <body>
 
 
-<div style="padding:30px;margin-top:30px;">
+<div style="padding:30px;margin-top:30px">
+<details>
+    <summary> Общая нагрузка на ЦПУ</summary>
+   <div style="height:35vh; width:100%; padding-top: 50px">
+  <canvas id="general_cpu"></canvas>
+</div>
+</details>
+</div>
+
+
+<div style="margin-bottom: 30px; margin-left: 30px; margin-right: 30px">
 <details>
     <summary> Нагрузка на ЦПУ по процессам</summary>
    <div style="height:35vh; width:100%; padding-top: 50px">
@@ -22,6 +32,15 @@
 </details>
 </div>
 
+
+<div style="margin-bottom: 30px; margin-left: 30px; margin-right: 30px ">
+<details>
+    <summary> Общее состояние ОЗУ </summary>
+     <div style=" height:40vh; width:100%;  padding-top: 50px">
+        <canvas id="general_mem"></canvas>
+    </div>
+</details>
+</div>
 
 <div style="margin-bottom: 30px; margin-left: 30px; margin-right: 30px ">
 <details>
@@ -46,83 +65,122 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
   // CPU
+
+
   cpu = {{ json_dump_cpu | tojson }};
   waf_nginx_cpu = JSON.parse({{ waf_nginx_cpu | tojson }});
   const elem = document.getElementById('cpu');
   new Chart(elem, {
     type: 'line',
     data: {
-      labels: cpu[0].map(row => row.date),
+      // labels: cpu[0].map(row => row.date),
       datasets: [{
         label: 'Elascicsearch (%)',
-        data: cpu[0].map(row => row.count),
+        data: cpu[0],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
       },
       {
         label: 'Mongo (%)',
-        data: cpu[1].map(row => row.count),
+        data: cpu[1],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'correlator (%)',
-        data: cpu[3].map(row => row.count),
+        data: cpu[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafd (%)',
-        data: cpu[3].map(row => row.count),
+        data: cpu[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafgowaf (%)',
-        data: cpu[4].map(row => row.count),
+        data: cpu[4],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'celery (%)',
-        data: cpu[5].map(row => row.count),
+        data: cpu[5],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'rabbitmq (%)',
-        data: cpu[6].map(row => row.count),
+        data: cpu[6],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'freshclam (%)',
-        data: cpu[7].map(row => row.count),
+        data: cpu[7],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'waf-sync (%)',
-        data: cpu[9].map(row => row.count),
+        data: cpu[9],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
@@ -163,6 +221,112 @@
     }
   });
 
+  //general_cpu
+  general_cpu_sys = JSON.parse({{ general_cpu_sys | tojson }});
+  general_cpu_user = JSON.parse({{ general_cpu_user | tojson }});
+  const elem4 = document.getElementById('general_cpu');
+  new Chart(elem4, {
+    type: 'line',
+    data: {
+        // labels: general_cpu_sys.map(row => row.date),
+        datasets: [{
+            label: 'Sys (%)',
+            data: general_cpu_sys,
+            borderWidth: 1,
+            tension: 0.1,
+            pointRadius: 1.5,
+            parsing: {
+            xAxisKey: 'date',
+            yAxisKey: 'count'
+                    }
+          },
+            {
+            label: 'User (%)',
+            data: general_cpu_user,
+            borderWidth: 1,
+            tension: 0.1,
+            pointRadius: 1.5,
+            parsing: {
+                xAxisKey: 'date',
+                yAxisKey: 'count'
+                    }
+
+            }
+            ]
+    },
+  options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      scales: {
+
+         x:{
+            ticks:
+                {
+                    color: "#ffffff"
+                }
+        },
+        y: {
+            ticks:
+                {
+                    color: "#ffffff"
+                },
+
+          suggestedMax: 100,
+          beginAtZero: true
+
+        }
+      }
+    }
+  });
+
+  //general_mem
+  general_mem_total = JSON.parse({{ general_mem_total | tojson }});
+  general_mem_free = JSON.parse({{ general_mem_free | tojson }});
+  const elem5 = document.getElementById('general_mem');
+  new Chart(elem5, {
+    type: 'line',
+    data: {labels: general_mem_total.map(row => row.date),
+        datasets: [{
+            label: 'Total (Gib)',
+            data: general_mem_total.map(row => row.count),
+            borderWidth: 1,
+            tension: 0.1,
+            pointRadius: 1.5
+          },
+            {
+            label: 'Free (Gib)',
+            data: general_mem_free.map(row => row.count),
+            borderWidth: 1,
+            tension: 0.1,
+            pointRadius: 1.5
+
+            }
+            ]
+    },
+  options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      scales: {
+
+         x:{
+            ticks:
+                {
+                    color: "#ffffff"
+                }
+        },
+        y: {
+            ticks:
+                {
+                    color: "#ffffff"
+                },
+
+          suggestedMax: 10,
+          beginAtZero: true
+
+        }
+      }
+    }
+  });
 
   //memory
   mem = {{ json_dump_mem | tojson }};
@@ -171,76 +335,112 @@
   new Chart(elem2, {
     type: 'line',
     data: {
-      labels: mem[0].map(row => row.date),
+      // labels: mem[0].map(row => row.date),
       datasets: [{
         label: 'Elascicsearch (%)',
-        data: mem[0].map(row => row.count),
+        data: mem[0],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
       },
       {
         label: 'Mongo (%)',
-        data: mem[1].map(row => row.count),
+        data: mem[1],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'correlator (%)',
-        data: mem[3].map(row => row.count),
+        data: mem[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafd (%)',
-        data: mem[3].map(row => row.count),
+        data: mem[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafgowaf (%)',
-        data: mem[4].map(row => row.count),
+        data: mem[4],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'celery (%)',
-        data: mem[5].map(row => row.count),
+        data: mem[5],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'rabbitmq (%)',
-        data: mem[6].map(row => row.count),
+        data: mem[6],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'freshclam (%)',
-        data: mem[7].map(row => row.count),
+        data: mem[7],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'waf-sync (%)',
-        data: mem[9].map(row => row.count),
+        data: mem[9],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
@@ -288,76 +488,112 @@
   new Chart(elem3, {
     type: 'line',
     data: {
-      labels: dsk[0].map(row => row.date),
+      // labels: dsk[0].map(row => row.date),
       datasets: [{
         label: 'Elascicsearch (%)',
-        data: cpu[0].map(row => row.count),
+        data: cpu[0],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
       },
       {
         label: 'Mongo (%)',
-        data: dsk[1].map(row => row.count),
+        data: dsk[1],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'correlator (%)',
-        data: dsk[3].map(row => row.count),
+        data: dsk[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafd (%)',
-        data: dsk[3].map(row => row.count),
+        data: dsk[3],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'wafgowaf (%)',
-        data: dsk[4].map(row => row.count),
+        data: dsk[4],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'celery (%)',
-        data: dsk[5].map(row => row.count),
+        data: dsk[5],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'rabbitmq (%)',
-        data: dsk[6].map(row => row.count),
+        data: dsk[6],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'freshclam (%)',
-        data: dsk[7].map(row => row.count),
+        data: dsk[7],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {
         label: 'waf-sync (%)',
-        data: dsk[9].map(row => row.count),
+        data: dsk[9],
         borderWidth: 1,
         tension: 0.1,
-        pointRadius: 1.5
+        pointRadius: 1.5,
+        parsing: {
+        xAxisKey: 'date',
+        yAxisKey: 'count'
+    }
 
       },
       {

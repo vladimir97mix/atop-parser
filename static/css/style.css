@@ -3,7 +3,9 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     margin: 0;
+    color: #dadada;
 }
+
 
 ul {
     list-style-type: none;

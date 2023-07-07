@@ -8,7 +8,6 @@ def compile_file_to_txt(filename):
     os.system("atop -r uploads/{0} -m -c > uploads/{1}_mem_c.txt".format(filename, filename))
     os.system("atop -r uploads/{0} -d > uploads/{1}_dsk.txt".format(filename, filename))
     os.system("atop -r uploads/{0} -d -c > uploads/{1}_dsk_c.txt".format(filename, filename))
-    return True
 
 
 def parse_cpu(filename):
@@ -27,11 +26,22 @@ def parse_cpu(filename):
         freshclam_list = []
         waf_nginx_list = []
         waf_sync_list = []
+        general_cpu_sys_list = []
+        general_cpu_user_list = []
         for line in atop_file:
             line = line.split()
             try:
                 if line[0] == 'ATOP':
                     date = str(line[3]+' '+line[4])
+                if line[0] == 'cpu':
+                    if line[2] == 'sys':
+                        general_cpu_sys = line[3][:-1]
+                        process_data_dict = dict({"date": date, "count": general_cpu_sys})
+                        general_cpu_sys_list.append(process_data_dict)
+                    if line[5] == 'user':
+                        general_cpu_user = line[6][:-1]
+                        process_data_dict = dict({"date": date, "count": general_cpu_user})
+                        general_cpu_user_list.append(process_data_dict)
                 if line[-1] == 'java':
                     java_cpu = int(line[10][:-1])
                     process_data_dict = dict({"date": date, "count": java_cpu})
@@ -60,6 +70,7 @@ def parse_cpu(filename):
                     freshclam_cpu = int(line[10][:-1])
                     process_data_dict = dict({"date": date, "count": freshclam_cpu})
                     freshclam_list.append(process_data_dict)
+
             except IndexError:
                 pass
 
@@ -86,7 +97,7 @@ def parse_cpu(filename):
             except IndexError:
                 pass
 
-        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list, general_cpu_sys_list, general_cpu_user_list]
 
 
 def parse_mem(filename):
@@ -104,11 +115,32 @@ def parse_mem(filename):
         freshclam_list = []
         waf_nginx_list = []
         waf_sync_list = []
+        general_mem_total = []
+        general_mem_free = []
+
         for line in atop_file:
             line = line.split()
             try:
                 if line[0] == 'ATOP':
                     date = str(line[3]+' '+line[4])
+                if line[0] == 'MEM':
+                    if line[3][-1] == 'M':
+                        m_t = '{:.2f}'.format(float(line[3][:-1]) / 1024)
+                        process_data_dict = dict({"date": date, "count": m_t})
+                        general_mem_total.append(process_data_dict)
+                    else:
+                        m_t = float(line[3][:-1])
+                        process_data_dict = dict({"date": date, "count": m_t})
+                        general_mem_total.append(process_data_dict)
+
+                    if line[6][-1] == 'M':
+                        m_f = '{:.2f}'.format(float(line[6][:-1]) / 1024)
+                        process_data_dict = dict({"date": date, "count": m_f})
+                        general_mem_free.append(process_data_dict)
+                    else:
+                        m_f = float(line[6][:-1])
+                        process_data_dict = dict({"date": date, "count": m_f})
+                        general_mem_free.append(process_data_dict)
                 if line[-1] == 'java':
                     java_mem = int(line[8][:-1])
                     process_data_dict = dict({"date": date, "count": java_mem})
@@ -163,7 +195,7 @@ def parse_mem(filename):
             except IndexError:
                 pass
 
-        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list]
+        return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list, general_mem_total, general_mem_free]
 
 
 def parse_dsk(filename):
