@@ -118,3 +118,36 @@ details[open] summary {
 .input-file input[type=file]:disabled + .input-file-btn {
 	background-color: #eee;
 }
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top:50px
+}
+
+td, th {
+  border: 1px solid #33b5e5;
+  text-align: center;
+  padding: 18px;
+    position: relative;
+}
+
+td a {
+
+    position: absolute; /* Абсолютное позиционирование */
+    left: 0; right: 0; /* По ширине ячейки */
+    top: 0; bottom: 0; /* По высоте ячейки */
+    padding: 10px; /* Поля вокруг текста */
+}
+td a:hover {
+    /*background-color: #33b5e5;*/
+    border: 3px solid #33b5e5;
+}
+
+
+a {
+    text-align: center;
+    color: white;
+    text-decoration: none;
+}

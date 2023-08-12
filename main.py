@@ -54,6 +54,11 @@ def file_list():
 def chart():
     filename = request.args.get('name')
     folder_name = request.args.get('fname')
+    if filename == None:
+        files = os.listdir(os.path.join('uploads', folder_name))
+        for file in files:
+            if not re.match(r'.*\.txt', file):
+                filename = file
     atop_parse.compile_file_to_txt(filename, folder_name)
     json_dump_cpu = atop_parse.parse_cpu(filename, folder_name)
     json_dump_mem = atop_parse.parse_mem(filename, folder_name)

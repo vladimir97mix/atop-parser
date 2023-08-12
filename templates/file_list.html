@@ -7,11 +7,23 @@
 
   <ul>
     <li><a href="/">Загрузить файл</a></li>
-    <li><a href="#!">Список файлов</a></li>
-    <li style="float: right; font-size: 12px; padding: 8px;">Atop Logs Parser v0.4</li>
+    <li><a href="/list">Список файлов</a></li>
+    <li style="float: right; font-size: 12px; padding: 8px;">Atop Logs Parser v0.6</li>
 </ul>
 </head>
 <body>
 
-</body>
-</html>
+<table>
+<th>Name:
+{% for item in dir_list %}
+<tr>
+ <td>
+     <a href="/chart?fname={{item}}">{{item}}</a>
+ </td>
+</tr>
+{% endfor %}
+    </th>
+</table>
+
+
+

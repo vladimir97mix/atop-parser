@@ -2,12 +2,18 @@ import os
 
 
 def compile_file_to_txt(filename, folder_name):
-    os.system("atop -r uploads/{0}/{1} > uploads/{0}/{1}.txt".format(folder_name, filename))
-    os.system("atop -r uploads/{0}/{1} -c > uploads/{0}/{1}_c.txt".format(folder_name, filename))
-    os.system("atop -r uploads/{0}/{1} -m > uploads/{0}/{1}_mem.txt".format(folder_name, filename))
-    os.system("atop -r uploads/{0}/{1} -m -c > uploads/{0}/{1}_mem_c.txt".format(folder_name, filename))
-    os.system("atop -r uploads/{0}/{1} -d > uploads/{0}/{1}_dsk.txt".format(folder_name, filename))
-    os.system("atop -r uploads/{0}/{1} -d -c > uploads/{0}/{1}_dsk_c.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} > uploads/{0}/{1}.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}_c.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} -c > uploads/{0}/{1}_c.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}_mem.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} -m > uploads/{0}/{1}_mem.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}_mem_c.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} -m -c > uploads/{0}/{1}_mem_c.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}_dsk.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} -d > uploads/{0}/{1}_dsk.txt".format(folder_name, filename))
+    if not os.path.exists("uploads/{0}/{1}_dsk_c.txt".format(folder_name, filename)):
+        os.system("atop -r uploads/{0}/{1} -d -c > uploads/{0}/{1}_dsk_c.txt".format(folder_name, filename))
 
 
 def parse_cpu(filename, folder_name):
