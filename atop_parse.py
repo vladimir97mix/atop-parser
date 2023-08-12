@@ -1,20 +1,19 @@
 import os
 
 
-def compile_file_to_txt(filename):
-    os.system("atop -r uploads/{0} > uploads/{1}.txt".format(filename, filename))
-    os.system("atop -r uploads/{0} -c > uploads/{1}_c.txt".format(filename, filename))
-    os.system("atop -r uploads/{0} -m > uploads/{1}_mem.txt".format(filename, filename))
-    os.system("atop -r uploads/{0} -m -c > uploads/{1}_mem_c.txt".format(filename, filename))
-    os.system("atop -r uploads/{0} -d > uploads/{1}_dsk.txt".format(filename, filename))
-    os.system("atop -r uploads/{0} -d -c > uploads/{1}_dsk_c.txt".format(filename, filename))
+def compile_file_to_txt(filename, folder_name):
+    os.system("atop -r uploads/{0}/{1} > uploads/{0}/{1}.txt".format(folder_name, filename))
+    os.system("atop -r uploads/{0}/{1} -c > uploads/{0}/{1}_c.txt".format(folder_name, filename))
+    os.system("atop -r uploads/{0}/{1} -m > uploads/{0}/{1}_mem.txt".format(folder_name, filename))
+    os.system("atop -r uploads/{0}/{1} -m -c > uploads/{0}/{1}_mem_c.txt".format(folder_name, filename))
+    os.system("atop -r uploads/{0}/{1} -d > uploads/{0}/{1}_dsk.txt".format(folder_name, filename))
+    os.system("atop -r uploads/{0}/{1} -d -c > uploads/{0}/{1}_dsk_c.txt".format(folder_name, filename))
 
 
-def parse_cpu(filename):
+def parse_cpu(filename, folder_name):
 
-    with open('uploads/{0}.txt'.format(filename), 'r') as cpu_file:
+    with open('uploads/{0}/{1}.txt'.format(folder_name, filename), 'r') as cpu_file:
         atop_file = cpu_file
-
         date = ''
         java_list = []
         mongo_list = []
@@ -74,7 +73,7 @@ def parse_cpu(filename):
             except IndexError:
                 pass
 
-    with open('uploads/{0}_c.txt'.format(filename), 'r') as cpu_file_c:
+    with open('uploads/{0}/{1}_c.txt'.format(folder_name, filename), 'r') as cpu_file_c:
         atop_file_c = cpu_file_c
 
         for line in atop_file_c:
@@ -100,8 +99,8 @@ def parse_cpu(filename):
         return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list, general_cpu_sys_list, general_cpu_user_list]
 
 
-def parse_mem(filename):
-    with open('uploads/{0}_mem.txt'.format(filename), 'r') as mem_file:
+def parse_mem(filename, folder_name):
+    with open('uploads/{0}/{1}_mem.txt'.format(folder_name, filename), 'r') as mem_file:
         atop_file = mem_file
 
         date = ''
@@ -172,7 +171,7 @@ def parse_mem(filename):
             except IndexError:
                 pass
 
-    with open('uploads/{0}_mem_c.txt'.format(filename), 'r') as mem_file_c:
+    with open('uploads/{0}/{1}_mem_c.txt'.format(folder_name, filename), 'r') as mem_file_c:
         atop_file_c = mem_file_c
 
         for line in atop_file_c:
@@ -198,8 +197,8 @@ def parse_mem(filename):
         return [java_list, mongo_list, correlator_list, wafd_list, wafgowaf_list, celery_list, rabbitmq_list, freshclam_list, waf_nginx_list, waf_sync_list, general_mem_total, general_mem_free]
 
 
-def parse_dsk(filename):
-    with open('uploads/{0}_dsk.txt'.format(filename), 'r') as dsk_file:
+def parse_dsk(filename, folder_name):
+    with open('uploads/{0}/{1}_dsk.txt'.format(folder_name, filename), 'r') as dsk_file:
         atop_file = dsk_file
 
         date = ''
@@ -249,7 +248,7 @@ def parse_dsk(filename):
             except IndexError:
                 pass
 
-    with open('uploads/{0}_dsk_c.txt'.format(filename), 'r') as dsk_file_c:
+    with open('uploads/{0}/{1}_dsk_c.txt'.format(folder_name, filename), 'r') as dsk_file_c:
         atop_file_c = dsk_file_c
 
         for line in atop_file_c:

@@ -4,13 +4,29 @@
     <meta charset="UTF-8">
     <title>Atop parser</title>
     <link rel= "stylesheet" type= "text/css" href= "/css/style.css">
+
+    <ul>
+    <li><a href="/">Загрузить файл</a></li>
+    <li><a href="/list">Список файлов</a></li>
+    <li style="float: right; font-size: 12px; padding: 8px;">Atop Logs Parser v0.4</li>
+</ul>
 </head>
 <body>
-<title>Загрузить новый файл</title>
-    <h1>Загрузить новый файл</h1>
+<div style="padding:20px;margin-top:20%; margin-left: 40%" >
     <form method=post enctype=multipart/form-data>
-      <input  type=file name=file>
-      <input type=submit value=Upload>
+        <h1>Выберете файл atop</h1>
+      <input  type=file name=file >
+        <h1>Введите имя</h1>
+      <label for="foldername"></label>
+      <input id="foldername" type=text name="foldername" >
+      <input type=submit value=Парсинг >
+      {% for mesg in get_flashed_messages() %}
+      <h4>{{ mesg }}</h4>
+      {% endfor %}
+
     </form>
+
+</div>
+
 </body>
 </html>
