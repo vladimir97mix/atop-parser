@@ -59,6 +59,7 @@ def chart():
         for file in files:
             if not re.match(r'.*\.txt', file):
                 filename = file
+
     atop_parse.compile_file_to_txt(filename, folder_name)
     json_dump_cpu = atop_parse.parse_cpu(filename, folder_name)
     json_dump_mem = atop_parse.parse_mem(filename, folder_name)
@@ -70,7 +71,6 @@ def chart():
     general_cpu_user = json.dumps(json_dump_cpu[11])
     general_mem_total = json.dumps(json_dump_mem[10])
     general_mem_free = json.dumps(json_dump_mem[11])
-
     return render_template("chart.html", json_dump_cpu=json_dump_cpu, json_dump_mem=json_dump_mem,
                            waf_nginx_cpu=waf_nginx_cpu, waf_nginx_mem=waf_nginx_mem, json_dump_dsk=json_dump_dsk,
                            waf_nginx_dsk=waf_nginx_dsk, general_cpu_sys=general_cpu_sys,
@@ -85,4 +85,4 @@ def files():
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
-    app.run(debug=True, port=5000, host='127.0.0.1')
+    app.run(debug=True, port=8000, host='0.0.0.0')
